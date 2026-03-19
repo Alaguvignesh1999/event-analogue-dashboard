@@ -1,0 +1,54 @@
+name: Refresh Data
+
+on:
+  schedule:
+    # Daily at 06:00 UTC (after US market close + buffer)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    # Manual trigger from GitHub UI
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install yfinance pandas numpy
+
+      - name: Run data pull notebook
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          # Option 1: If you have a standalone pull script
+          # python scripts/pull_and_convert.py
+
+          # Option 2: Run the notebook headless and convert the pkl
+          # pip install nbconvert jupyter
+          # jupyter nbconvert --to script --execute ME_Dashboard_Clean_12.ipynb
+          # python scripts/convert_data.py data/bundled_cache.pkl
+
+          # For now: convert existing pkl if present
+          if [ -f data/bundled_cache.pkl ]; then
+            python scripts/convert_data.py data/bundled_cache.pkl
+          else
+            echo "No pkl found. Upload bundled_cache.pkl to data/ or add a pull script."
+            exit 1
+          fi
+
+      - name: Commit and push updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/*.json
+          if git diff --staged --quiet; then
+            echo "No data changes"
+          else
+            git commit -m "chore: refresh data $(date -u +%Y-%m-%d)"
+            git push
+          fi

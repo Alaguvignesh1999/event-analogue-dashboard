@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0a0e17;
+  --surface: #111827;
+  --card: #1a1f2e;
+  --border: #252d3d;
+  --hover: #1e2740;
+  --t1: #f0f2f5;
+  --t2: #a0aec0;
+  --t3: #5a6578;
+  --t4: #3a4050;
+  --accent: #3b82f6;
+  --positive: #22c55e;
+  --negative: #ef4444;
+  --amber: #f59e0b;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--t2);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar — thin, unobtrusive */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--t4); }
+
+/* Selection */
+::selection { background: rgba(59, 130, 246, 0.25); color: var(--t1); }
+
+/* Global transitions */
+*, *::before, *::after {
+  transition-property: color, background-color, border-color, opacity;
+  transition-duration: 120ms;
+  transition-timing-function: ease;
+}
+
+/* Plotly overrides — remove all chrome */
+.js-plotly-plot .plotly .modebar { display: none !important; }
+.js-plotly-plot { background: transparent !important; }
+.js-plotly-plot .main-svg { background: transparent !important; }
+
+/* Form elements reset */
+select, input[type="text"], input[type="number"], input[type="date"] {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--t1);
+  font-size: 13px;
+  outline: none;
+}
+select:focus, input:focus {
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+  background: var(--card);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 3.5px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+/* Range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--bg);
+}
+
+/* Smooth page transitions */
+@layer utilities {
+  .animate-in {
+    animation: fadeIn 200ms ease-out;
+  }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Table hover rows */
+tr { transition: background-color 80ms ease; }
